@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cyber Spider Web Background with Login/Signup</title>
+  <style>
+    /* Background & canvas */
+    html, body {
+      margin: 0; padding: 0; overflow: hidden;
+      background: #0b0c10;
+      height: 100%;
+      cursor: none;
+      user-select: none;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #00ff99;
+    }
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: #0b0c10;
+    }
+
+    /* Container for forms */
+    .form-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(11, 12, 16, 0.85);
+      border: 1px solid #00ff99;
+      border-radius: 8px;
+      padding: 30px 40px;
+      width: 320px;
+      box-shadow: 0 0 15px #00ff99;
+      z-index: 10;
+      user-select: text;
+      cursor: auto;
+    }
+
+    h2 {
+      margin: 0 0 20px;
+      text-align: center;
+      color: #00ff99;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #00ff99;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 15px;
+      border: 1px solid #00ff99;
+      border-radius: 4px;
+      background: #0b0c10;
+      color: #00ff99;
+      font-size: 14px;
+    }
+
+    input::placeholder {
+      color: #00ff9977;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #00ff99;
+      border: none;
+      border-radius: 4px;
+      color: #0b0c10;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #00cc77;
+    }
+
+    .toggle-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #00ff99;
+      text-decoration: underline;
+      user-select: text;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="spiderCanvas"></canvas>
+
+<div class="form-container" id="formContainer">
+  <!-- Login form -->
+  <form id="loginForm">
+    <h2>Login</h2>
+    <label for="loginEmail">Email</label>
+    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+    <label for="loginPassword">Password</label>
+    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+    <button type="submit">Login</button>
+    <div class="toggle-link" id="showSignup">Don't have an account? Sign Up</div>
+  </form>
+
+  <!-- Signup form -->
+  <form id="signupForm" style="display:none;">
+    <h2>Sign Up</h2>
+    <label for="signupName">Name</label>
+    <input type="text" id="signupName" placeholder="Enter your name" required>
+    <label for="signupEmail">Email</label>
+    <input type="email" id="signupEmail" placeholder="Enter your email" required>
+    <label for="signupPassword">Password</label>
+    <input type="password" id="signupPassword" placeholder="Enter your password" required>
+    <button type="submit">Sign Up</button>
+    <div class="toggle-link" id="showLogin">Already have an account? Login</div>
+  </form>
+</div>
+
+<script>
+  // Your existing spider web background code
+  const canvas = document.getElementById('spiderCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  const numPoints = 100;
+  const maxDist = 120;
+
+  class Point {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.baseX = x;
+      this.baseY = y;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.radius = 2;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      if (this.x < this.baseX - 15 || this.x > this.baseX + 15) this.vx *= -1;
+      if (this.y < this.baseY - 15 || this.y > this.baseY + 15) this.vy *= -1;
+
+      this.x = Math.min(Math.max(this.x, 0), width);
+      this.y = Math.min(Math.max(this.y, 0), height);
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.fillStyle = '#00ff99';
+      ctx.shadowColor = '#00ff99';
+      ctx.shadowBlur = 5;
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+
+  const points = [];
+  for (let i = 0; i < numPoints; i++) {
+    const px = Math.random() * width;
+    const py = Math.random() * height;
+    points.push(new Point(px, py));
+  }
+
+  const mousePoint = new Point(width / 2, height / 2);
+  mousePoint.radius = 4;
+
+  window.addEventListener('resize', () => {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    mousePoint.x = e.clientX;
+    mousePoint.y = e.clientY;
+  });
+
+  function distance(p1, p2) {
+    return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+  }
+
+  function drawLine(p1, p2, alpha) {
+    ctx.strokeStyle = `rgba(0, 255, 153, ${alpha})`;
+    ctx.lineWidth = 1;
+    ctx.shadowColor = 'rgba(0, 255, 153, 0.7)';
+    ctx.shadowBlur = 3;
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x, p2.y);
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    points.forEach(point => {
+      point.update();
+      point.draw();
+    });
+
+    mousePoint.draw();
+
+    for(let i = 0; i < points.length; i++) {
+      for(let j = i + 1; j < points.length; j++) {
+        const dist = distance(points[i], points[j]);
+        if(dist < maxDist) {
+          const alpha = 1 - dist / maxDist;
+          drawLine(points[i], points[j], alpha);
+        }
+      }
+      const distMouse = distance(points[i], mousePoint);
+      if(distMouse < maxDist) {
+        const alpha = 1 - distMouse / maxDist;
+        drawLine(points[i], mousePoint, alpha);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+
+  // Toggle forms
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const showSignup = document.getElementById('showSignup');
+  const showLogin = document.getElementById('showLogin');
+
+  showSignup.addEventListener('click', () => {
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+  });
+
+  showLogin.addEventListener('click', () => {
+    signupForm.style.display = 'none';
+    loginForm.style.display = 'block';
+  });
+
+  // Example form submit handlers
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert(`Logging in with Email: ${loginForm.loginEmail.value}`);
+  });
+
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert(`Signing up with Email: ${signupForm.signupEmail.value} and Name: ${signupForm.signupName.value}`);
+  });
+</script>
+
+</body>
+</html>
