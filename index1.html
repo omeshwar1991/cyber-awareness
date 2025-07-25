@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Auto-Incrementing Number</title>
+  <style>
+    body {
+      background: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    #counter {
+      font-size: 80px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="counter">0</div>
+
+  <script>
+    let current = 0;
+    let target = 1000; // Final number to reach
+    let duration = 3000; // Duration of animation in milliseconds
+
+    let counter = document.getElementById("counter");
+    let startTime = null;
+
+    function animateNumber(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = timestamp - startTime;
+
+      const value = Math.min(Math.floor((progress / duration) * target), target);
+      counter.textContent = value.toLocaleString();
+
+      if (progress < duration) {
+        requestAnimationFrame(animateNumber);
+      }
+    }
+
+    // Start the animation
+    requestAnimationFrame(animateNumber);
+  </script>
+
+</body>
+</html>
