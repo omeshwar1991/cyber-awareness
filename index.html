@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Probe Mind - Login</title>
+  <style>
+    /* General Reset */
+    * {margin:0; padding:0; box-sizing:border-box;}
+    body {
+      background: #000;
+      font-family: Arial, sans-serif;
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Website Title */
+    h1 {
+      text-align: center;
+      padding: 20px;
+      font-size: 2.5em;
+      color: #ff3333;
+      text-shadow: 0 0 10px red, 0 0 20px red;
+    }
+
+    /* Center Login Popup */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(20,20,20,0.95);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,0,0,0.7);
+      text-align: center;
+      transition: transform 0.6s ease;
+      z-index: 10;
+    }
+    .popup.active {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .popup input {
+      display: block;
+      margin: 15px auto;
+      padding: 10px;
+      width: 220px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+    .popup button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #ff3333;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .popup button:hover {
+      background: #ff5555;
+    }
+
+    /* Spider Cursor */
+    .spider {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      pointer-events: none;
+      z-index: 100;
+      background: url('https://i.ibb.co/0Fx5M7B/spider.png') no-repeat center;
+      background-size: contain;
+      transition: transform 0.05s linear;
+    }
+  </style>
+</head>
+<body>
+  <h1>Probe Mind</h1>
+
+  <!-- Spider Cursor -->
+  <div class="spider" id="spider"></div>
+
+  <!-- Login Popup -->
+  <div class="popup" id="loginPopup">
+    <h2>Login</h2>
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <button>Login</button>
+  </div>
+
+  <script>
+    // Show Popup on Load
+    window.onload = () => {
+      document.getElementById("loginPopup").classList.add("active");
+    };
+
+    // Spider Cursor Follow
+    const spider = document.getElementById("spider");
+    document.addEventListener("mousemove", (e) => {
+      spider.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+    });
+
+    // On Reload show popup again
+    window.onbeforeunload = () => {
+      document.getElementById("loginPopup").classList.remove("active");
+    };
+  </script>
+</body>
+</html>
