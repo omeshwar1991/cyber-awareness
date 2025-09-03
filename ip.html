@@ -62,7 +62,7 @@
           <input id="ip" type="text" placeholder="Enter IP address (e.g., 8.8.8.8)" />
           <button id="btn">Search</button>
         </div>
-        <div class="hint">Tip: Enter a valid public IP address (e.g., <code>8.8.8.8</code>)</div>
+        <div class="hint">Tip: Enter a valid public IP address like <code>1.1.1.1</code> or <code>8.8.8.8</code></div>
         <div id="out" class="result" hidden></div>
       </div>
     </div>
@@ -74,7 +74,7 @@
   </footer>
 
   <script>
-    // Particle background
+    // Particle Background
     (function () {
       const canvas = document.getElementById('bg');
       const ctx = canvas.getContext('2d');
@@ -110,8 +110,7 @@
             if (dist < maxDist) {
               const a = 1 - (dist / maxDist);
               ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
-              ctx.strokeStyle = 'rgba(80,180,170,' + (a * 0.6) + ')';
-              ctx.lineWidth = 1; ctx.stroke();
+              ctx.strokeStyle = 'rgba(80,180,170,' + (a * 0.6) + ')'; ctx.lineWidth = 1; ctx.stroke();
             }
           }
         }
@@ -144,25 +143,28 @@
       elOut.textContent = "🔎 Searching...";
 
       try {
-        const r = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}`);
+        const r = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
         const data = await r.json();
 
-        if (data.status === "success") {
-          const reply =
+        if (data.error) {
+          elOut.textContent = "❌ IP lookup failed: " + data.reason;
+          return;
+        }
+
+        const reply =
 `✅ Results by 🕵️‍♀️ Probe Mind
 🌐 IP Lookup: ${ip}
 ============================
-🏳️ Country: ${fmt(data.country)} (${fmt(data.countryCode)})
-🗺️ Region: ${fmt(data.regionName)} (${fmt(data.region)})
+🏳️ Country: ${fmt(data.country_name)} (${fmt(data.country)})
+🗺️ Region: ${fmt(data.region)})
 🏙️ City: ${fmt(data.city)}
-📮 ZIP: ${fmt(data.zip)}
-📍 Latitude: ${fmt(data.lat)}
-📍 Longitude: ${fmt(data.lon)}
+📮 ZIP: ${fmt(data.postal)}
+📍 Latitude: ${fmt(data.latitude)}
+📍 Longitude: ${fmt(data.longitude)}
 ⏰ Timezone: ${fmt(data.timezone)}
-📡 ISP: ${fmt(data.isp)}
-🏢 Organization: ${fmt(data.org)}
-🆔 AS: ${fmt(data.as)}
-🗺️ Google Maps: https://www.google.com/maps/search/?api=1&query=${fmt(data.lat)},${fmt(data.lon)}
+📡 ASN: ${fmt(data.asn)}
+🏢 Org: ${fmt(data.org)}
+🗺️ Google Maps: https://www.google.com/maps/search/?api=1&query=${fmt(data.latitude)},${fmt(data.longitude)}
 ============================
 Data by:
 Cyber Crime Police Station
@@ -170,10 +172,7 @@ Gandhinagar Range, Gandhinagar
 Developed by:
 Omeshwar [Police Constable]`;
 
-          elOut.textContent = reply;
-        } else {
-          elOut.textContent = "❌ IP lookup failed: " + data.message;
-        }
+        elOut.textContent = reply;
       } catch (e) {
         elOut.textContent = "⚠️ Error fetching IP info: " + e;
       }
