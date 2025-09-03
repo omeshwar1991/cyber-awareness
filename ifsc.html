@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>ProbeMind — IFSC Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --header-h: 64px; --footer-h: 44px; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif; color: #eaeaea; background: #0b0f16; overflow: hidden; }
+    #bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(1200px 800px at 50% 50%, #0e1624 0%, #0b0f16 60%, #070a0f 100%); }
+    header, footer {
+      position: fixed; left: 0; right: 0; z-index: 2;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    header { top: 0; height: var(--header-h); display: flex; align-items: center; padding: 0 16px; }
+    footer { bottom: 0; height: var(--footer-h); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: none; }
+    .brand { font-weight: 800; letter-spacing: 0.5px; font-size: 18px; margin-right: 16px; white-space: nowrap; }
+    nav a { color: #eaeaea; text-decoration: none; margin: 0 10px; padding: 8px 12px; border-radius: 999px; }
+    nav a:hover { background: rgba(255,255,255,0.08); }
+    nav a.active { background: #14b8a6; color: #021012; }
+    main { position: relative; z-index: 1; height: calc(100% - var(--header-h) - var(--footer-h)); margin-top: var(--header-h); margin-bottom: var(--footer-h); overflow: auto; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 28px 16px 40px; }
+    .panel { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06); }
+    h1 { margin: 10px 0 18px; font-size: clamp(22px, 3.6vw, 34px); }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    input[type="text"] {
+      flex: 1 1 280px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.35); color: #eaeaea; font-size: 16px; outline: none;
+    }
+    button {
+      padding: 12px 16px; border-radius: 12px; background: #14b8a6; color: #041012; border: none; font-weight: 700; cursor: pointer; transition: transform .15s ease, box-shadow .2s ease;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(20,184,166,0.25); }
+    .result { margin-top: 16px; white-space: pre-wrap; background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.35); padding: 16px; border-radius: 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+    .hint { color: #9db0c6; font-size: 14px; margin-top: 8px; }
+    .footer-left, .footer-right { font-size: 13px; color: #cfd8e3; }
+    a { position: relative; z-index: 3; }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+
+  <header>
+    <div class="brand">ProbeMind</div>
+    <nav>
+      <a href="index.html">Home Page</a>
+      <a class="active" href="ifsc.html">IFSC Search</a>
+      <a href="ip.html">IP Lookup</a>
+      <a href="tower.html">Tower Search</a>
+      <a href="cdr.html">CDR Analysis</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="panel">
+        <h1>IFSC Search</h1>
+        <div class="row">
+          <input id="ifsc" type="text" placeholder="Enter IFSC (e.g., HDFC0001234)" maxlength="20" />
+          <button id="btn">Search</button>
+        </div>
+        <div class="hint">Tip: IFSC ko uppercase me enter kare (system auto uppercase kar dega). Example: <code>SBIN0005943</code></div>
+        <div id="out" class="result" hidden></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-left">© 2025 ProbeMind.in</div>
+    <div class="footer-right">Developed by Omeshwar Vankar</div>
+  </footer>
+
+  <script>
+    // Reuse the same particle background as home
+    (function() {
+      const canvas = document.getElementById('bg');
+      const ctx = canvas.getContext('2d');
+      let w, h, particles = [], mouse = { x: null, y: null }, maxDist = 140;
+
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+        const targetCount = Math.min(160, Math.floor((w * h) / 12000));
+        if (particles.length < targetCount) {
+          while (particles.length < targetCount) particles.push(newParticle());
+        } else {
+          particles.length = targetCount;
+        }
+      }
+      function newParticle() {
+        return { x: Math.random()*w, y: Math.random()*h, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6, r:1+Math.random()*2 };
+      }
+      function step() {
+        ctx.clearRect(0,0,w,h);
+        for (let i=0;i<particles.length;i++){
+          const p=particles[i]; p.x+=p.vx; p.y+=p.vy;
+          if(p.x<0||p.x>w) p.vx*=-1; if(p.y<0||p.y>h) p.vy*=-1;
+          if (mouse.x!==null){ const dx=mouse.x-p.x, dy=mouse.y-p.y, d2=dx*dx+dy*dy; if(d2<maxDist*maxDist){ const f=0.0008; p.vx+=dx*f; p.vy+=dy*f; } }
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='rgba(180,220,255,0.75)'; ctx.fill();
+          for (let j=i+1;j<particles.length;j++){ const q=particles[j]; const dx=p.x-q.x, dy=p.y-q.y; const dist=Math.hypot(dx,dy); if(dist<maxDist){ const a=1-(dist/maxDist); ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.strokeStyle='rgba(80,180,170,'+(a*0.6)+')'; ctx.lineWidth=1; ctx.stroke(); } }
+        }
+        requestAnimationFrame(step);
+      }
+      window.addEventListener('resize', resize);
+      window.addEventListener('mousemove', e=>{mouse.x=e.clientX; mouse.y=e.clientY;});
+      window.addEventListener('mouseleave', ()=>{mouse.x=mouse.y=null;});
+      resize(); step();
+    })();
+
+    // IFSC Search logic (JS version of your Python function)
+    const elIfsc = document.getElementById('ifsc');
+    const elBtn  = document.getElementById('btn');
+    const elOut  = document.getElementById('out');
+
+    function fmt(value) { return value == null || value === "" ? "N/A" : String(value); }
+
+    async function searchIFSC() {
+      let ifsc = (elIfsc.value || "").trim().toUpperCase();
+      elIfsc.value = ifsc;
+
+      if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) {
+        elOut.hidden = false;
+        elOut.textContent = "❌ Invalid IFSC format. Example: SBIN0005943";
+        return;
+      }
+
+      elOut.hidden = false;
+      elOut.textContent = "🔎 Searching...";
+
+      try {
+        const r = await fetch(`https://ifsc.razorpay.com/${encodeURIComponent(ifsc)}`, { method: "GET" });
+        if (r.status === 200) {
+          const data = await r.json();
+          const reply =
+`✅ Results by 🕵️‍♀️ Probe Mind
+🏦 Bank Details for ${ifsc}
+============================
+• Bank: ${fmt(data.BANK)}
+• Branch: ${fmt(data.BRANCH)}
+• Address: ${fmt(data.ADDRESS)}
+• City: ${fmt(data.CITY)}
+• District: ${fmt(data.DISTRICT)}
+• State: ${fmt(data.STATE)}
+• Contact: ${fmt(data.CONTACT)}
+• MICR: ${fmt(data.MICR)}
+============================
+Data by:
+Cyber Crime Police Station
+Gandhinagar Range, Gandhinagar
+Developed by:
+Omeshwar [Police Constable]`;
+          elOut.textContent = reply;
+        } else {
+          elOut.textContent = "❌ Invalid IFSC code or not found.";
+        }
+      } catch (e) {
+        elOut.textContent = "⚠️ Error fetching IFSC info: " + e;
+      }
+    }
+
+    elBtn.addEventListener('click', searchIFSC);
+    elIfsc.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchIFSC(); });
+  </script>
+</body>
+</html>
