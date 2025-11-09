@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Combined Numerology Calculator (Name + DOB)</title>
+<title>Numerology — Name + DOB (With Lucky Number & Color)</title>
 
-<!-- Bootstrap CSS (CDN) -->
+<!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
@@ -17,11 +17,11 @@
     background: var(--bg);
     color: var(--text);
     font-family: "Segoe UI", Roboto, Arial, sans-serif;
-    padding: 28px;
+    padding: 24px;
     transition: background .3s, color .3s;
   }
   .card-main {
-    max-width: 760px;
+    max-width: 880px;
     margin: 8px auto;
     background: var(--card);
     border-radius: 12px;
@@ -36,10 +36,12 @@
     z-index: 9999;
   }
   .result-box { margin-top: 18px; background: rgba(255,255,255,0.02); padding: 16px; border-radius:10px; }
-  .section { margin-top:10px; padding:10px; border-radius:8px; background: rgba(0,0,0,0.08); }
+  .section { margin-top:10px; padding:10px; border-radius:8px; background: rgba(0,0,0,0.06); }
   .muted { color: #bdbdbd; font-size: 0.95rem; }
   b { color: var(--accent); }
   .download-btn { margin-right:8px; }
+  .label-sm { font-size:0.95rem; color: #bdbdbd; }
+  .color-pill { display:inline-block; padding:6px 10px; border-radius:20px; color:#fff; margin-right:8px; font-weight:600; }
   @media (max-width:575px){
     .card-main { padding: 16px; }
   }
@@ -51,46 +53,56 @@
 
 <div class="card-main">
   <div class="text-center">
-    <h1>🔢 Numerology — Name + Birth Date</h1>
-    <p class="muted">नाम और जन्मतिथि डालें — फिर Name Number, Life Path Number और दोनों की सलाह पायें</p>
+    <h1>🔢 Numerology — Name + DOB</h1>
+    <p class="muted">नाम और जन्मतिथि डालें — अब Lucky Number & Lucky Color दोनों combined तरीके से मिलेंगे</p>
   </div>
 
-  <div class="row g-3">
-    <div class="col-md-8">
-      <label class="form-label">पूरा नाम</label>
-      <input id="nameInput" class="form-control" placeholder="उदाहरण: Devanshi Patel" />
+  <div class="row g-3 align-items-end">
+    <div class="col-md-7">
+      <label class="form-label">पूरा नाम / Full name</label>
+      <input id="nameInput" class="form-control" placeholder="उदाहरण / e.g.: Devanshi Patel" />
     </div>
 
-    <div class="col-md-4">
-      <label class="form-label">जन्मतिथि (DOB)</label>
-      <!-- date input (browser date-picker) -->
+    <div class="col-md-3">
+      <label class="form-label">जन्मतिथि (DOB) / Date of Birth</label>
       <input id="dobInput" type="date" class="form-control" />
     </div>
 
-    <div class="col-12 text-center">
+    <div class="col-md-2 text-end">
       <button class="btn btn-primary w-100" onclick="calculateAll()">Calculate</button>
     </div>
   </div>
 
   <div id="result" class="result-box" style="display:none;">
-    <div id="letters" class="muted"></div>
-    <div id="nameTotal" class="mt-2"></div>
-    <div id="lifeTotal" class="mt-2"></div>
+    <div id="letters" class="label-sm"></div>
 
-    <div id="meaningName" class="section"></div>
-    <div id="meaningLife" class="section"></div>
-    <div id="compat" class="section"></div>
+    <div class="row mt-2">
+      <div class="col-md-6">
+        <div id="nameTotal" class="fs-6"></div>
+        <div id="meaningName" class="section"></div>
+      </div>
+      <div class="col-md-6">
+        <div id="lifeTotal" class="fs-6"></div>
+        <div id="meaningLife" class="section"></div>
+      </div>
+    </div>
+
+    <div id="compat" class="section mt-3"></div>
+
+    <div id="luckyBlock" class="section mt-3"></div>
+
+    <div id="actionPlan" class="section mt-3"></div>
 
     <div class="d-flex flex-wrap justify-content-center mt-3">
-      <button class="btn btn-sm download-btn" onclick="downloadPDF()">📄 Save as PDF</button>
-      <button class="btn btn-sm download-btn" onclick="downloadImage()">📸 Save as Image</button>
-      <button class="btn btn-sm btn-outline-light ms-1" onclick="copyResult()">🔗 Copy Text</button>
+      <button class="btn btn-sm download-btn" onclick="downloadPDF()">📄 Save as PDF / PDF डाउनलोड</button>
+      <button class="btn btn-sm download-btn" onclick="downloadImage()">📸 Save as Image / PNG डाउनलोड</button>
+      <button class="btn btn-sm btn-outline-light ms-1" onclick="copyResult()">🔗 Copy Text / टेक्स्ट कॉपी करें</button>
     </div>
   </div>
 
   <div class="mt-3 muted">
     <small>
-      नोट: Name Number कैलकुलेशन आपकी अल्फान्यूमेरिक तालिका के आधार पर है (A,I,J,Q,Y=1 ... F,P=8)। Life Path Number जन्मतिथि के सभी अंकों के योग को single digit तक घटाकर मिलता है।
+      नोट: Lucky Color प्राथमिकता: (1) अगर दोनों बराबर हों तो वही, (2) अगर कोई Master हो तो Master का रंग प्राथमिक, (3) अन्यथा Life Path का रंग प्राथमिक — दोनों रंग भी दिखेंगे।  
     </small>
   </div>
 </div>
@@ -100,7 +112,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-/* ---------------- mapping और data ---------------- */
+/* ---------- mapping & data ---------- */
 const mapping = {
   'A':1,'I':1,'J':1,'Q':1,'Y':1,
   'B':2,'K':2,'R':2,
@@ -112,24 +124,31 @@ const mapping = {
   'F':8,'P':8
 };
 
+const MASTERS = [11,22,33];
+
 const data = {
-  1:{ meaning:"नेतृत्व, आत्मविश्वासी और सुरुचिपूर्ण शुरुआत। निर्णय लेने में तेज़।", color:"लाल", day:"रविवार", gem:"Ruby", profession:"Leader, Entrepreneur" },
-  2:{ meaning:"सहयोगी, संवेदनशील और संतुलन प्रिय। संबंधों में मजबूत।", color:"सफेद/हल्का नीला", day:"सोमवार", gem:"Pearl", profession:"Counselor, Teacher" },
-  3:{ meaning:"रचनात्मक, बोलने-लिखने में निपुण और खुशमिज़ाज।", color:"पीला/गुलाबी", day:"गुरुवार", gem:"Yellow Sapphire", profession:"Artist, Writer" },
-  4:{ meaning:"व्यवस्थित, मेहनती और भरोसेमंद। नियमों का पालन।", color:"नीला/ग्रे", day:"बुधवार", gem:"Gomed", profession:"Engineer, Admin" },
-  5:{ meaning:"स्वतंत्र, साहसी और परिवर्तनशील। यात्रा, मीडिया में अच्छा।", color:"फिरोज़ी", day:"बुधवार", gem:"Emerald", profession:"Marketing, Travel" },
-  6:{ meaning:"पोषक, परिवार-प्रेमी और जिम्मेदार।", color:"हरा/क्रीम", day:"शुक्रवार", gem:"Diamond", profession:"Doctor, Designer" },
-  7:{ meaning:"गहन विचारक, अध्यात्म और खोजी आत्मा।", color:"सफेद/हल्का हरा", day:"सोमवार", gem:"Cat's Eye", profession:"Research, Spiritual" },
-  8:{ meaning:"धन, शक्ति और प्रभावक क्षमता। नेतृत्व में पैठ।", color:"काला/गहरा नीला", day:"शनिवार", gem:"Blue Sapphire", profession:"Business, Finance" },
-  9:{ meaning:"सेवा, करुणा और समर्पण। समाज निर्माण में रुचि।", color:"लाल/सुनहरा", day:"मंगलवार", gem:"Coral", profession:"Medical, Social Work" }
+  1:{ color_hi:"लाल", color_en:"Red", color_hex:"#C62828", meaning_hi:"नेतृत्व, आत्मविश्वासी और नई शुरुआत।", meaning_en:"Leadership, confidence and fresh starts.", profession:"Leader, Entrepreneur" },
+  2:{ color_hi:"सफेद", color_en:"White", color_hex:"#FAFAFA", meaning_hi:"सहयोगी, संवेदनशील और संतुलन प्रिय।", meaning_en:"Cooperative, sensitive and balance-oriented.", profession:"Counselor, Teacher" },
+  3:{ color_hi:"पीला", color_en:"Yellow", color_hex:"#F9A825", meaning_hi:"रचनात्मक और अभिव्यक्तिपूर्ण।", meaning_en:"Creative, expressive and joyful.", profession:"Artist, Writer" },
+  4:{ color_hi:"नीला", color_en:"Blue", color_hex:"#1565C0", meaning_hi:"मेहनती, व्यवस्थित और भरोसेमंद।", meaning_en:"Hardworking, practical and reliable.", profession:"Engineer, Researcher" },
+  5:{ color_hi:"फिरोज़ी", color_en:"Turquoise", color_hex:"#00897B", meaning_hi:"स्वतंत्र, साहसी और परिवर्तनशील।", meaning_en:"Independent, adventurous and adaptable.", profession:"Marketing, Media" },
+  6:{ color_hi:"हरा", color_en:"Green", color_hex:"#2E7D32", meaning_hi:"पोषक, सौंदर्य और जिम्मेदारी।", meaning_en:"Nurturing, responsible and family-oriented.", profession:"Doctor, Designer" },
+  7:{ color_hi:"सफेद/हल्का हरा", color_en:"White/Light Green", color_hex:"#9CCC65", meaning_hi:"आध्यात्मिक, विश्लेषक और शोधप्रिय।", meaning_en:"Spiritual, analytical and introspective.", profession:"Research, Spiritual" },
+  8:{ color_hi:"काला/गहरा नीला", color_en:"Black/Dark Blue", color_hex:"#0D47A1", meaning_hi:"धन, शक्ति और सफलता का संकेत।", meaning_en:"Powerful, ambitious and success-oriented.", profession:"Business, Finance" },
+  9:{ color_hi:"सुनहरा", color_en:"Golden", color_hex:"#FFC107", meaning_hi:"सेवा, करुणा और व्यापक दृष्टि।", meaning_en:"Compassionate, service-minded and humanitarian.", profession:"Medical, Social Work" },
+  11:{ color_hi:"सफेद", color_en:"White", color_hex:"#E3F2FD", meaning_hi:"Master 11: उच्च आध्यात्मिकता और प्रेरणा।", meaning_en:"Master 11: heightened intuition and inspiration.", profession:"Spiritual Teacher" },
+  22:{ color_hi:"गहरा नीला", color_en:"Dark Blue", color_hex:"#0D47A1", meaning_hi:"Master 22: बिल्डर — बड़ा निर्माण कार्य।", meaning_en:"Master 22: master builder, practical large-scale achievements.", profession:"Architect, Business Leader" },
+  33:{ color_hi:"सुनहरा", color_en:"Golden", color_hex:"#FFD54F", meaning_hi:"Master 33: सेवा का उच्च रूप।", meaning_en:"Master 33: master teacher of compassion and service.", profession:"Philanthropy, Teaching" }
 };
 
-/* ------------- Helper Functions ------------- */
-function reduceToSingle(n) {
-  n = Math.abs(Math.floor(n));
+/* ---------- helpers ---------- */
+function reduceWithMasters(n) {
+  n = Math.abs(Math.floor(n || 0));
+  if (MASTERS.includes(n)) return n;
   while (n > 9) {
     let s = 0;
     while (n > 0) { s += n % 10; n = Math.floor(n/10); }
+    if (MASTERS.includes(s)) return s;
     n = s;
   }
   return n === 0 ? 0 : n;
@@ -144,92 +163,167 @@ function calculateNameNumber(fullName) {
     breakdown.push(`${ch}=${v}`);
     total += v;
   }
-  const reduced = reduceToSingle(total);
+  const reduced = reduceWithMasters(total);
   return { total, reduced, breakdown };
 }
 
 function calculateLifePathFromDate(isoDate) {
-  // isoDate from <input type="date"> is yyyy-mm-dd or empty
   if (!isoDate) return null;
-  // convert to DDMMYYYY digits
   const [y,m,d] = isoDate.split('-');
   const digits = (d + m + y).replace(/[^0-9]/g,'').split('').map(Number);
   const sum = digits.reduce((a,b)=>a+b,0);
-  const reduced = reduceToSingle(sum);
+  const reduced = reduceWithMasters(sum);
   return { sum, reduced, digits };
 }
 
-/* ------------- Compatibility / Advice ------------- */
-function compatibilityAdvice(nameNum, lifeNum) {
-  if (!nameNum || !lifeNum) return "दोनों नंबर उपलब्ध नहीं हैं इसलिए compatibility सुझाव सीमित है।";
+/* ---------- Combined Lucky logic ---------- */
+function determineLucky(nameNum, lifeNum) {
+  // returns object with primaryNumber, secondaryNumber (maybe null), primaryColor info, secondaryColor info, explanation (hi/en)
+  if (!nameNum && !lifeNum) return null;
+
+  // if both equal -> primary is that
   if (nameNum === lifeNum) {
-    return `आपका Name Number और Life Path Number दोनों <b>${nameNum}</b> हैं — यह बहुत समन्वित संकेत है। आपकी ज़िन्दगी में नाम और मार्ग एक-दूसरे को सपोर्ट करेंगे। नेतृत्व (या विषय के अनुसार) में निरंतरता महसूस होगी।`;
+    const col = data[nameNum] || {};
+    return {
+      primaryNumber: nameNum,
+      secondaryNumber: null,
+      primaryColorHi: col.color_hi || '-',
+      primaryColorEn: col.color_en || '-',
+      primaryColorHex: col.color_hex || '#777',
+      explanationHi: `Name Number और Life Path Number दोनों ${nameNum} हैं — यह आपका मुख्य Lucky Number है।`,
+      explanationEn: `Your Name Number and Life Path Number are both ${nameNum} — this is your primary Lucky Number.`
+    };
   }
-  // simple complementary/friendly pairs (common friendly pairs)
-  const friendlyPairs = [
-    [1,5],[5,1],[2,6],[6,2],[3,9],[9,3],[4,8],[8,4],[7,7]
-  ];
-  for (const p of friendlyPairs) {
-    if (p[0]===nameNum && p[1]===lifeNum) {
-      return `Name Number <b>${nameNum}</b> और Life Path <b>${lifeNum}</b> आमतौर पर अच्छी तालमेल रखते हैं। आप अपनी प्रवृत्ति (name number) को अपने जीवन पथ (life number) के अवसरों में सफलतापूर्वक लगा पाएँगे।`;
-    }
+
+  // if any is master -> prioritize master
+  const nameIsMaster = MASTERS.includes(nameNum);
+  const lifeIsMaster = MASTERS.includes(lifeNum);
+  if (nameIsMaster || lifeIsMaster) {
+    const masterNum = nameIsMaster ? nameNum : lifeIsMaster ? lifeNum : null;
+    const otherNum = masterNum === nameNum ? lifeNum : nameNum;
+    const colMaster = data[masterNum] || {};
+    const colOther = data[otherNum] || {};
+    return {
+      primaryNumber: masterNum,
+      secondaryNumber: otherNum,
+      primaryColorHi: colMaster.color_hi || '-',
+      primaryColorEn: colMaster.color_en || '-',
+      primaryColorHex: colMaster.color_hex || '#777',
+      secondaryColorHi: colOther.color_hi || '-',
+      secondaryColorEn: colOther.color_en || '-',
+      secondaryColorHex: colOther.color_hex || '#aaa',
+      explanationHi: `Master Number (${masterNum}) मौजूद है — इसे प्राथमिक Lucky Number मानें; दूसरा नंबर सहायक है।`,
+      explanationEn: `A Master Number (${masterNum}) is present — treat it as the primary Lucky Number; the other number is secondary.`
+    };
   }
-  // general guidance if not matched
-  // compare nature: practical vs creative, leadership vs service
-  const text = [];
-  const N = data[nameNum]?.meaning || "";
-  const L = data[lifeNum]?.meaning || "";
-  text.push(`Name Number (${nameNum}): ${N}`);
-  text.push(`Life Path (${lifeNum}): ${L}`);
-  text.push("सुझाव: अपने नाम की प्रकृति और जीवन पथ के लक्ष्यों पर ध्यान दें — जहाँ अलग विशेषताएँ हों वहाँ संतुलन बनाइए। उदाहरण के लिए:");
-  if (nameNum === 1 && lifeNum === 7) text.push("नेतृत्व और आत्म-खोज का मेल — निर्णयों में ध्यान व चिंतन रखें।");
-  if (nameNum === 5 && lifeNum === 4) text.push("उत्साह और अनुशासन का संतुलन ज़रूरी है — योजनाएँ बनाकर यात्रा करें।");
-  if (text.length === 3) text.push("लो-लेवल सलाह: अनुशासन, धैर्य और रणनीति अपनाएँ—विशेषकर करियर/रिलेशनशिप में।");
-  return text.join("<br>");
+
+  // otherwise prefer Life Path as primary (user's life path often guides)
+  const primary = lifeNum || nameNum;
+  const secondary = (primary === lifeNum) ? nameNum : lifeNum;
+  const colP = data[primary] || {};
+  const colS = data[secondary] || {};
+  return {
+    primaryNumber: primary,
+    secondaryNumber: secondary,
+    primaryColorHi: colP.color_hi || '-',
+    primaryColorEn: colP.color_en || '-',
+    primaryColorHex: colP.color_hex || '#777',
+    secondaryColorHi: colS.color_hi || '-',
+    secondaryColorEn: colS.color_en || '-',
+    secondaryColorHex: colS.color_hex || '#aaa',
+    explanationHi: `Life Path (${primary}) प्राथमिक है — इसे अपना मुख्य Lucky Number मानें; नाम अंक (${secondary}) सहायक है।`,
+    explanationEn: `Life Path (${primary}) is primary — consider it your main Lucky Number; the Name number (${secondary}) is supportive.`
+  };
 }
 
-/* ------------- Main Calculate & UI ------------- */
+/* ---------- Action plan generator (simple) ---------- */
+function generateActionPlan(nameNum, lifeNum) {
+  const plan = [];
+  if (nameNum) plan.push({ hi:`(Name) अपने नाम की ताकत (#${nameNum}) का उपयोग कर के एक छोटा प्रोज़ेक्ट शुरू करें।`, en:`(Name) Use your name strength (#${nameNum}) to start one small project.`});
+  if (lifeNum) plan.push({ hi:`(Life) अपने जीवन पथ (#${lifeNum}) के अनुसार 1-3 महीने के लक्ष्य बनाएं।`, en:`(Life) Set 1-3 month goals aligned with your life path (#${lifeNum}).`});
+  if (MASTERS.includes(nameNum) || MASTERS.includes(lifeNum)) plan.push({ hi:`Master number detected — रोज़ाना ध्यान/reflect करें और mentor खोजें।`, en:`Master number detected — practice daily reflection and seek mentorship.`});
+  plan.push({ hi:`Daily: एक छोटा actionable step लें और उसे पूरा करें — momentum मिलेगा।`, en:`Daily: take one small actionable step and complete it to build momentum.`});
+  return plan.slice(0,5);
+}
+
+/* ---------- UI & Main ---------- */
 function calculateAll() {
   const name = document.getElementById('nameInput').value.trim();
-  const dob = document.getElementById('dobInput').value; // yyyy-mm-dd
+  const dob = document.getElementById('dobInput').value;
 
-  if (!name && !dob) { alert("कृपया नाम और/या जन्मतिथि दर्ज करें।"); return; }
+  if (!name && !dob) { alert("कृपया नाम और/या जन्मतिथि दर्ज करें / Please enter name and/or DOB."); return; }
 
-  // Name calc
   const nameRes = calculateNameNumber(name);
-  // Life path calc
   const lifeRes = calculateLifePathFromDate(dob);
 
-  // render
   document.getElementById('result').style.display = 'block';
-  document.getElementById('letters').innerHTML = name ? `<b>Letter Breakdown:</b> ${nameRes.breakdown.join(', ')}` : `<b>Letter Breakdown:</b> (नाम उपलब्ध नहीं)`;
-  document.getElementById('nameTotal').innerHTML = name ? `<b>Name Total:</b> ${nameRes.total} → <b>Name Number:</b> ${nameRes.reduced}` : '';
-  document.getElementById('lifeTotal').innerHTML = lifeRes ? `<b>Life Path Sum:</b> ${lifeRes.sum} → <b>Life Path Number:</b> ${lifeRes.reduced}` : '';
+  document.getElementById('letters').innerHTML = name ? `<b>Letter Breakdown:</b> ${nameRes.breakdown.join(', ')}<br><small class="muted">अक्षर का मान / Letters values</small>` : `<b>Letter Breakdown:</b> (नाम उपलब्ध नहीं / name not provided)`;
 
-  // meanings
+  // Name display
   if (name) {
-    const nm = nameRes.reduced || 0;
-    const info = data[nm] || {};
-    document.getElementById('meaningName').innerHTML = `<b>Name (${nm}) Meaning:</b> ${info.meaning || '—' } <br><small class="muted">Lucky Color: ${info.color || '-'} • Lucky Day: ${info.day || '-'}</small>`;
-  } else { document.getElementById('meaningName').innerHTML = ''; }
+    const nm = nameRes.reduced;
+    const masterNote = MASTERS.includes(nm) ? ` <span class="muted">(Master Number: ${nm})</span>` : '';
+    document.getElementById('nameTotal').innerHTML = `<b>Name Total:</b> ${nameRes.total} → <b>Name Number:</b> ${nm}${masterNote}`;
+    const d = data[nm] || {};
+    document.getElementById('meaningName').innerHTML = `<b>Meaning (Name ${nm}) — हिंदी:</b> ${d.meaning_hi || '-'}<br><b>English:</b> ${d.meaning_en || '-'}<br><small class="muted">Suggested profession: ${d.profession || '-'}</small>`;
+  } else { document.getElementById('nameTotal').innerHTML=''; document.getElementById('meaningName').innerHTML=''; }
 
+  // Life display
   if (lifeRes) {
     const ln = lifeRes.reduced;
-    const info2 = data[ln] || {};
-    document.getElementById('meaningLife').innerHTML = `<b>Life Path (${ln}) Meaning:</b> ${info2.meaning || '—'} <br><small class="muted">Lucky Color: ${info2.color || '-'} • Lucky Day: ${info2.day || '-'}</small>`;
-  } else { document.getElementById('meaningLife').innerHTML = ''; }
+    const masterNoteL = MASTERS.includes(ln) ? ` <span class="muted">(Master Number: ${ln})</span>` : '';
+    document.getElementById('lifeTotal').innerHTML = `<b>Life Path Sum:</b> ${lifeRes.sum} → <b>Life Path Number:</b> ${ln}${masterNoteL}`;
+    const d2 = data[ln] || {};
+    document.getElementById('meaningLife').innerHTML = `<b>Meaning (Life ${ln}) — हिंदी:</b> ${d2.meaning_hi || '-'}<br><b>English:</b> ${d2.meaning_en || '-'}<br><small class="muted">Suggested profession: ${d2.profession || '-'}</small>`;
+  } else { document.getElementById('lifeTotal').innerHTML=''; document.getElementById('meaningLife').innerHTML=''; }
 
   // compatibility
   const nameNum = name ? nameRes.reduced : null;
   const lifeNum = lifeRes ? lifeRes.reduced : null;
-  document.getElementById('compat').innerHTML = `<b>Combined Guidance / Compatibility:</b><br>${compatibilityAdvice(nameNum, lifeNum)}`;
+  const comp = compatibilityAdvice(nameNum, lifeNum);
+  document.getElementById('compat').innerHTML = `<b>Combined Guidance — हिंदी:</b><br>${comp.hi.replace(/\n/g,'<br>')}<hr><b>Combined Guidance — English:</b><br>${comp.en.replace(/\n/g,'<br>')}`;
+
+  // lucky block
+  const lucky = determineLucky(nameNum, lifeNum);
+  if (lucky) {
+    let html = `<b>Lucky Number(s):</b> `;
+    if (lucky.secondaryNumber) html += `${lucky.primaryNumber} (primary), ${lucky.secondaryNumber} (secondary)`;
+    else html += `${lucky.primaryNumber}`;
+    html += `<br><div style="margin-top:8px;"><b>Lucky Color (Primary):</b> <span class="color-pill" style="background:${lucky.primaryColorHex}">${lucky.primaryColorHi} / ${lucky.primaryColorEn}</span>`;
+    if (lucky.secondaryNumber) {
+      html += `<br style="margin-top:8px;"><b>Lucky Color (Secondary):</b> <span class="color-pill" style="background:${lucky.secondaryColorHex || '#999'}">${lucky.secondaryColorHi || '-'} / ${lucky.secondaryColorEn || '-'}</span>`;
+    }
+    html += `</div><div style="margin-top:8px;"><small class="muted">${lucky.explanationHi}<br>${lucky.explanationEn}</small></div>`;
+    document.getElementById('luckyBlock').innerHTML = html;
+  } else {
+    document.getElementById('luckyBlock').innerHTML = '';
+  }
+
+  // action plan
+  const plan = generateActionPlan(nameNum, lifeNum);
+  const planHiHtml = `<b>Action Plan — हिंदी:</b><ul>${plan.map(p=>`<li>${p.hi}</li>`).join('')}</ul>`;
+  const planEnHtml = `<b>Action Plan — English:</b><ul>${plan.map(p=>`<li>${p.en}</li>`).join('')}</ul>`;
+  document.getElementById('actionPlan').innerHTML = planHiHtml + "<hr>" + planEnHtml;
 }
 
-/* ------------- Download / Copy features ------------- */
+/* ---------- compatibility advice (simple) ---------- */
+function compatibilityAdvice(nameNum, lifeNum) {
+  if (!nameNum && !lifeNum) return { hi: "डेटा उपलब्ध नहीं।", en: "No data available." };
+  if (nameNum === lifeNum) {
+    return { hi: `Name Number और Life Path Number दोनों ${nameNum} हैं — समन्वय मजबूत है।`, en: `Both numbers are ${nameNum} — strong alignment.` };
+  }
+  if (MASTERS.includes(nameNum) || MASTERS.includes(lifeNum)) {
+    return { hi: `मास्टर नंबर मौजूद है — उच्च उद्देश्य और जिम्मेदारी का संकेत।`, en: `A master number is present — indicates higher purpose.` };
+  }
+  const friendlyPairs = [[1,5],[5,1],[2,6],[6,2],[3,9],[9,3],[4,8],[8,4],[7,7]];
+  for (const p of friendlyPairs) if (p[0]===nameNum && p[1]===lifeNum) return { hi:`${nameNum} और ${lifeNum} सामान्यतः मेल खाते हैं।`, en:`${nameNum} and ${lifeNum} generally match well.` };
+  return { hi:`नाम और जीवन पथ में कुछ भिन्नताएँ हैं — संतुलन और अनुशासन उपयोगी रहेगा।`, en:`There are differences between name and life path — balance and discipline will help.` };
+}
+
+/* ---------- Download / copy features ---------- */
 async function downloadPDF(){
   const { jsPDF } = window.jspdf;
   const el = document.getElementById('result');
-  // ensure visible and slightly larger scale for quality
   const canvas = await html2canvas(el, { scale: 2, backgroundColor: null });
   const img = canvas.toDataURL('image/png');
   const pdf = new jsPDF('p','mm','a4');
@@ -251,24 +345,20 @@ async function downloadImage(){
 }
 
 function copyResult() {
-  const el = document.getElementById('result');
-  // produce readable plain-text
-  let text = '';
   const letters = document.getElementById('letters').innerText;
   const nt = document.getElementById('nameTotal').innerText;
   const lt = document.getElementById('lifeTotal').innerText;
   const mn = document.getElementById('meaningName').innerText;
   const ml = document.getElementById('meaningLife').innerText;
   const comp = document.getElementById('compat').innerText;
-  text = [letters, nt, lt, mn, ml, comp].filter(Boolean).join('\n\n');
-  navigator.clipboard.writeText(text).then(()=> {
-    alert('Result copied to clipboard!');
-  }).catch(()=> {
-    alert('Copy failed — आप मैन्युअली कॉपी कर सकते हैं।');
-  });
+  const lk = document.getElementById('luckyBlock').innerText;
+  const ap = document.getElementById('actionPlan').innerText;
+  const text = [letters, nt, lt, mn, ml, comp, lk, ap].filter(Boolean).join('\n\n');
+  navigator.clipboard.writeText(text).then(()=> { alert('Result copied to clipboard! / परिणाम क्लिपबोर्ड में कॉपी हो गया!'); })
+  .catch(()=> { alert('Copy failed — आप मैन्युअली कॉपी कर सकते हैं।'); });
 }
 
-/* ------------- Theme toggle persistence ------------- */
+/* ---------- Theme persistence ---------- */
 const themeBtn = document.getElementById('themeToggle');
 function setThemeFromLocal() {
   const theme = localStorage.getItem('nm_theme') || 'dark';
