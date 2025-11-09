@@ -1,247 +1,290 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="hi">
 <head>
-  <meta charset="utf-8" />
-  <title>ProbeMind — Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati&display=swap" rel="stylesheet" />
-  <style>
-    body, main, .wrap, .panel {
-      font-family: 'Noto Sans Gujarati', sans-serif;
-      color: #cfd8e3;
-      
-    }
-    main {
-      max-width: 700px;
-      margin: 80px auto 40px;
-      text-align: center;
-    }
-    .panel {
-      border-radius: 24px;
-      padding: 30px;
-      font-size: 14px;       /* size thodu nanu */
-      font-weight: 700;      /* font ne bold karo */
-      line-height: 1.5;
-      border: 1px solid #14b8a6;
-      text-align: left;
-      background: rgba(20,184,166,0.1);
-    }
-    ul {
-      padding-left: 20px;
-      margin: 0;
-    }
-    ul li {
-      margin-bottom: 10px;
-    }
-    p.italic-note {
-      margin-top: 25px;
-      font-size: 12px;
-      color: #7fd1c7;
-      font-style: italic;
-      font-weight: 600;
-    }
-    p.signature {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #14b8a6;
-      font-weight: 700;
-    }
-  </style>  
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Combined Numerology Calculator (Name + DOB)</title>
+
+<!-- Bootstrap CSS (CDN) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-    :root { --header-h: 64px; --footer-h: 44px; --glass: rgba(255,255,255,0.08); }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", sans-serif; color: #eaeaea; background: #0b0f16; overflow: hidden; }
-    /* Canvas background sits at bottom */
-    #bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(1200px 800px at 50% 50%, #0e1624 0%, #0b0f16 60%, #070a0f 100%); }
-    /* Frosted glass header/footer */
-    header, footer {
-      position: fixed; left: 0; right: 0;
-      backdrop-filter: blur(10px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      z-index: 2;
-    }
-    header { top: 0; height: var(--header-h); display: flex; align-items: center; padding: 0 16px; }
-    footer { bottom: 0; height: var(--footer-h); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: none; }
-    .brand { font-weight: 800; letter-spacing: 0.5px; font-size: 18px; margin-right: 16px; white-space: nowrap; }
-    nav a {
-      color: #eaeaea; text-decoration: none; margin: 0 10px; padding: 8px 12px; border-radius: 999px;
-      transition: transform .15s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
-    }
-    nav a:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
-    nav a.active { background: #14b8a6; color: #021012; }
-    main {
-      position: relative; z-index: 1;
-      height: calc(100% - var(--header-h) - var(--footer-h));
-      margin-top: var(--header-h);
-      margin-bottom: var(--footer-h);
-      overflow: auto;
-    }
-    .hero {
-      min-height: 100%;
-      display: grid;
-      place-items: center;
-      padding: 40px 16px;
-    }
-    .card {
-      width: min(900px, 92vw);
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
-    }
-    .title { font-size: clamp(28px, 4vw, 42px); margin: 6px 0 10px; }
-    .subtitle { color: #b6c2d1; margin: 0 0 16px; }
-    .grid {
-      display: grid; gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      margin-top: 18px;
-    }
-    .tile {
-      background: var(--glass);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 16px;
-      border-radius: 16px;
-      transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
-      text-decoration: none; color: #eaeaea; display: block;
-    }
-    .tile:hover { transform: translateY(-4px); background: rgba(20,184,166,0.12); border-color: rgba(20,184,166,0.6); box-shadow: 0 16px 40px rgba(20,184,166,0.12); }
-    .muted { color: #9db0c6; font-size: 14px; }
-    .footer-left, .footer-right { font-size: 13px; color: #cfd8e3; }
-    /* Make sure links clickable above canvas */
-    a { position: relative; z-index: 3; }
-  </style>
+  :root{
+    --bg: #121212; --text:#e8e8e8; --card:#1e1e1e; --accent:#64b5f6; --input:#2c2c2c;
+  }
+  body.light { --bg:#f7f9fc; --text:#1f1f1f; --card:#ffffff; --accent:#1976d2; --input:#ffffff; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    padding: 28px;
+    transition: background .3s, color .3s;
+  }
+  .card-main {
+    max-width: 760px;
+    margin: 8px auto;
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  }
+  h1 { color: var(--accent); font-weight:600; }
+  input, select { background: var(--input); color: var(--text); border:1px solid rgba(255,255,255,0.06); }
+  .theme-btn {
+    position: fixed; right: 18px; top: 18px;
+    background: var(--accent); color: white; border: none; padding: 8px 12px; border-radius: 999px; cursor:pointer;
+    z-index: 9999;
+  }
+  .result-box { margin-top: 18px; background: rgba(255,255,255,0.02); padding: 16px; border-radius:10px; }
+  .section { margin-top:10px; padding:10px; border-radius:8px; background: rgba(0,0,0,0.08); }
+  .muted { color: #bdbdbd; font-size: 0.95rem; }
+  b { color: var(--accent); }
+  .download-btn { margin-right:8px; }
+  @media (max-width:575px){
+    .card-main { padding: 16px; }
+  }
+</style>
 </head>
 <body>
-  <!-- animated background -->
-  <canvas id="bg"></canvas>
 
-  <!-- Header -->
-  <header>
-    <div class="brand">ProbeMind</div>
-    <nav aria-label="Main navigation">
-      <a class="active" href="index.html">Home Page</a>
-      <a href="ifsc.html">IFSC Search</a>
-      <a href="ip.html">IP Lookup</a>
-      <a href="#">Tower Search</a>
-      <a href="cdr.html">CDR Analysis</a>
-    </nav>
-  </header>
+<button class="theme-btn" id="themeToggle">🌙 Dark</button>
 
-  <!-- Content -->
- <main>
-    <div class="wrap">
-      <h1 style="font-weight: 700; font-size: 20px;">ટીપ: સાયબર ગુનાની તપાસ માટે મહત્વપૂર્ણ સૂચનો</h1>
-      <div class="panel">
-        <ul>
-          <li><strong>ડેટાનું સુરક્ષણ કરો:</strong> તપાસ દરમિયાન ડિજિટલ પુરાવાની વિશ્વસનીયતા અને અખંડિતતા જાળવો.</li>
-          <li><strong>આઈપી અને નેટવર્ક ટ્રાફિકની તપાસ:</strong> સંદિગ્ધ આઇપી એડ્રેસ, લોગ્સ અને પેકેટ હેડર્સની વિગતવાર તપાસ કરો.</li>
-          <li><strong>ફિશિંગ અને મેલવેર પર ખાસ ધ્યાન આપો:</strong> આ હુમલાઓના સંકેતો ઓળખો અને સંબંધિત ફાઇલોને સુરક્ષિત કરો.</li>
-          <li><strong>સ્માર્ટફોન અને મોબાઈલ ડેટા:</strong> મોબાઇલ ફોરેન્સિક ટૂલ્સનો ઉપયોગ કરીને ચેટ, કોલ અને લોકેશન રેકોર્ડ્સનું વિશ્લેષણ કરો.</li>
-          <li><strong>કાનૂની પ્રક્રિયાનું પાલન કરો:</strong> પુરાવા એકઠા કરતી વખતે પ્રોટોકોલનું કડક પાલન કરો જેથી તપાસ કાયદેસર મજબૂત બને.</li>
-        </ul>
-        <p class="italic-note">
-          યાદ રાખો: સાઈબર ગુનાની પુરાવા સંવેદનશીલ હોય છે, આથી સાવધાની અને ચોકસાઈ સાથે કામ લો.
-        </p>
-        <p class="signature">
-          — ProbeMind સાઇબર ફોરેન્સિક ટીમ
-        </p>
-      </div>
+<div class="card-main">
+  <div class="text-center">
+    <h1>🔢 Numerology — Name + Birth Date</h1>
+    <p class="muted">नाम और जन्मतिथि डालें — फिर Name Number, Life Path Number और दोनों की सलाह पायें</p>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-8">
+      <label class="form-label">पूरा नाम</label>
+      <input id="nameInput" class="form-control" placeholder="उदाहरण: Devanshi Patel" />
     </div>
-  </main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-left">© 2025 ProbeMind.in</div>
-    <div class="footer-right">Developed by Omeshwar Vankar</div>
-  </footer>
+    <div class="col-md-4">
+      <label class="form-label">जन्मतिथि (DOB)</label>
+      <!-- date input (browser date-picker) -->
+      <input id="dobInput" type="date" class="form-control" />
+    </div>
 
-  <script>
-    // Particle Web Background with Mouse Interaction
-    (function() {
-      const canvas = document.getElementById('bg');
-      const ctx = canvas.getContext('2d');
-      let w, h, particles = [], mouse = { x: null, y: null }, maxDist = 140;
+    <div class="col-12 text-center">
+      <button class="btn btn-primary w-100" onclick="calculateAll()">Calculate</button>
+    </div>
+  </div>
 
-      function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-        // create particles proportional to area
-        const targetCount = Math.min(160, Math.floor((w * h) / 12000));
-        if (particles.length < targetCount) {
-          while (particles.length < targetCount) particles.push(newParticle());
-        } else {
-          particles.length = targetCount;
-        }
-      }
+  <div id="result" class="result-box" style="display:none;">
+    <div id="letters" class="muted"></div>
+    <div id="nameTotal" class="mt-2"></div>
+    <div id="lifeTotal" class="mt-2"></div>
 
-      function newParticle() {
-        return {
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: (Math.random() - 0.5) * 0.6,
-          r: 1 + Math.random() * 2
-        };
-      }
+    <div id="meaningName" class="section"></div>
+    <div id="meaningLife" class="section"></div>
+    <div id="compat" class="section"></div>
 
-      function step() {
-        ctx.clearRect(0, 0, w, h);
+    <div class="d-flex flex-wrap justify-content-center mt-3">
+      <button class="btn btn-sm download-btn" onclick="downloadPDF()">📄 Save as PDF</button>
+      <button class="btn btn-sm download-btn" onclick="downloadImage()">📸 Save as Image</button>
+      <button class="btn btn-sm btn-outline-light ms-1" onclick="copyResult()">🔗 Copy Text</button>
+    </div>
+  </div>
 
-        // draw connections
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          p.x += p.vx; p.y += p.vy;
+  <div class="mt-3 muted">
+    <small>
+      नोट: Name Number कैलकुलेशन आपकी अल्फान्यूमेरिक तालिका के आधार पर है (A,I,J,Q,Y=1 ... F,P=8)। Life Path Number जन्मतिथि के सभी अंकों के योग को single digit तक घटाकर मिलता है।
+    </small>
+  </div>
+</div>
 
-          // bounce edges
-          if (p.x < 0 || p.x > w) p.vx *= -1;
-          if (p.y < 0 || p.y > h) p.vy *= -1;
+<!-- libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-          // mild attraction to mouse
-          if (mouse.x !== null) {
-            const dx = mouse.x - p.x, dy = mouse.y - p.y;
-            const d2 = dx*dx + dy*dy;
-            if (d2 < maxDist * maxDist) {
-              const f = 0.0008; // attraction factor
-              p.vx += dx * f;
-              p.vy += dy * f;
-            }
-          }
+<script>
+/* ---------------- mapping और data ---------------- */
+const mapping = {
+  'A':1,'I':1,'J':1,'Q':1,'Y':1,
+  'B':2,'K':2,'R':2,
+  'C':3,'G':3,'L':3,'S':3,
+  'D':4,'M':4,'T':4,
+  'E':5,'H':5,'N':5,'X':5,
+  'U':6,'V':6,'W':6,
+  'O':7,'Z':7,
+  'F':8,'P':8
+};
 
-          // draw point
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-          ctx.fillStyle = 'rgba(180, 220, 255, 0.75)';
-          ctx.fill();
+const data = {
+  1:{ meaning:"नेतृत्व, आत्मविश्वासी और सुरुचिपूर्ण शुरुआत। निर्णय लेने में तेज़।", color:"लाल", day:"रविवार", gem:"Ruby", profession:"Leader, Entrepreneur" },
+  2:{ meaning:"सहयोगी, संवेदनशील और संतुलन प्रिय। संबंधों में मजबूत।", color:"सफेद/हल्का नीला", day:"सोमवार", gem:"Pearl", profession:"Counselor, Teacher" },
+  3:{ meaning:"रचनात्मक, बोलने-लिखने में निपुण और खुशमिज़ाज।", color:"पीला/गुलाबी", day:"गुरुवार", gem:"Yellow Sapphire", profession:"Artist, Writer" },
+  4:{ meaning:"व्यवस्थित, मेहनती और भरोसेमंद। नियमों का पालन।", color:"नीला/ग्रे", day:"बुधवार", gem:"Gomed", profession:"Engineer, Admin" },
+  5:{ meaning:"स्वतंत्र, साहसी और परिवर्तनशील। यात्रा, मीडिया में अच्छा।", color:"फिरोज़ी", day:"बुधवार", gem:"Emerald", profession:"Marketing, Travel" },
+  6:{ meaning:"पोषक, परिवार-प्रेमी और जिम्मेदार।", color:"हरा/क्रीम", day:"शुक्रवार", gem:"Diamond", profession:"Doctor, Designer" },
+  7:{ meaning:"गहन विचारक, अध्यात्म और खोजी आत्मा।", color:"सफेद/हल्का हरा", day:"सोमवार", gem:"Cat's Eye", profession:"Research, Spiritual" },
+  8:{ meaning:"धन, शक्ति और प्रभावक क्षमता। नेतृत्व में पैठ।", color:"काला/गहरा नीला", day:"शनिवार", gem:"Blue Sapphire", profession:"Business, Finance" },
+  9:{ meaning:"सेवा, करुणा और समर्पण। समाज निर्माण में रुचि।", color:"लाल/सुनहरा", day:"मंगलवार", gem:"Coral", profession:"Medical, Social Work" }
+};
 
-          // connect to nearby particles
-          for (let j = i + 1; j < particles.length; j++) {
-            const q = particles[j];
-            const dx = p.x - q.x, dy = p.y - q.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < maxDist) {
-              const alpha = 1 - (dist / maxDist);
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(q.x, q.y);
-              ctx.strokeStyle = 'rgba(80, 180, 170, ' + (alpha * 0.6) + ')';
-              ctx.lineWidth = 1;
-              ctx.stroke();
-            }
-          }
-        }
-        requestAnimationFrame(step);
-      }
+/* ------------- Helper Functions ------------- */
+function reduceToSingle(n) {
+  n = Math.abs(Math.floor(n));
+  while (n > 9) {
+    let s = 0;
+    while (n > 0) { s += n % 10; n = Math.floor(n/10); }
+    n = s;
+  }
+  return n === 0 ? 0 : n;
+}
 
-      window.addEventListener('resize', resize);
-      window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
-      window.addEventListener('mouseleave', () => { mouse.x = mouse.y = null; });
+function calculateNameNumber(fullName) {
+  const cleaned = (fullName || "").toUpperCase().replace(/[^A-Z]/g, '');
+  let total = 0;
+  const breakdown = [];
+  for (const ch of cleaned) {
+    const v = mapping[ch] || 0;
+    breakdown.push(`${ch}=${v}`);
+    total += v;
+  }
+  const reduced = reduceToSingle(total);
+  return { total, reduced, breakdown };
+}
 
-      resize();
-      step();
-    })();
-  </script>
+function calculateLifePathFromDate(isoDate) {
+  // isoDate from <input type="date"> is yyyy-mm-dd or empty
+  if (!isoDate) return null;
+  // convert to DDMMYYYY digits
+  const [y,m,d] = isoDate.split('-');
+  const digits = (d + m + y).replace(/[^0-9]/g,'').split('').map(Number);
+  const sum = digits.reduce((a,b)=>a+b,0);
+  const reduced = reduceToSingle(sum);
+  return { sum, reduced, digits };
+}
+
+/* ------------- Compatibility / Advice ------------- */
+function compatibilityAdvice(nameNum, lifeNum) {
+  if (!nameNum || !lifeNum) return "दोनों नंबर उपलब्ध नहीं हैं इसलिए compatibility सुझाव सीमित है।";
+  if (nameNum === lifeNum) {
+    return `आपका Name Number और Life Path Number दोनों <b>${nameNum}</b> हैं — यह बहुत समन्वित संकेत है। आपकी ज़िन्दगी में नाम और मार्ग एक-दूसरे को सपोर्ट करेंगे। नेतृत्व (या विषय के अनुसार) में निरंतरता महसूस होगी।`;
+  }
+  // simple complementary/friendly pairs (common friendly pairs)
+  const friendlyPairs = [
+    [1,5],[5,1],[2,6],[6,2],[3,9],[9,3],[4,8],[8,4],[7,7]
+  ];
+  for (const p of friendlyPairs) {
+    if (p[0]===nameNum && p[1]===lifeNum) {
+      return `Name Number <b>${nameNum}</b> और Life Path <b>${lifeNum}</b> आमतौर पर अच्छी तालमेल रखते हैं। आप अपनी प्रवृत्ति (name number) को अपने जीवन पथ (life number) के अवसरों में सफलतापूर्वक लगा पाएँगे।`;
+    }
+  }
+  // general guidance if not matched
+  // compare nature: practical vs creative, leadership vs service
+  const text = [];
+  const N = data[nameNum]?.meaning || "";
+  const L = data[lifeNum]?.meaning || "";
+  text.push(`Name Number (${nameNum}): ${N}`);
+  text.push(`Life Path (${lifeNum}): ${L}`);
+  text.push("सुझाव: अपने नाम की प्रकृति और जीवन पथ के लक्ष्यों पर ध्यान दें — जहाँ अलग विशेषताएँ हों वहाँ संतुलन बनाइए। उदाहरण के लिए:");
+  if (nameNum === 1 && lifeNum === 7) text.push("नेतृत्व और आत्म-खोज का मेल — निर्णयों में ध्यान व चिंतन रखें।");
+  if (nameNum === 5 && lifeNum === 4) text.push("उत्साह और अनुशासन का संतुलन ज़रूरी है — योजनाएँ बनाकर यात्रा करें।");
+  if (text.length === 3) text.push("लो-लेवल सलाह: अनुशासन, धैर्य और रणनीति अपनाएँ—विशेषकर करियर/रिलेशनशिप में।");
+  return text.join("<br>");
+}
+
+/* ------------- Main Calculate & UI ------------- */
+function calculateAll() {
+  const name = document.getElementById('nameInput').value.trim();
+  const dob = document.getElementById('dobInput').value; // yyyy-mm-dd
+
+  if (!name && !dob) { alert("कृपया नाम और/या जन्मतिथि दर्ज करें।"); return; }
+
+  // Name calc
+  const nameRes = calculateNameNumber(name);
+  // Life path calc
+  const lifeRes = calculateLifePathFromDate(dob);
+
+  // render
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('letters').innerHTML = name ? `<b>Letter Breakdown:</b> ${nameRes.breakdown.join(', ')}` : `<b>Letter Breakdown:</b> (नाम उपलब्ध नहीं)`;
+  document.getElementById('nameTotal').innerHTML = name ? `<b>Name Total:</b> ${nameRes.total} → <b>Name Number:</b> ${nameRes.reduced}` : '';
+  document.getElementById('lifeTotal').innerHTML = lifeRes ? `<b>Life Path Sum:</b> ${lifeRes.sum} → <b>Life Path Number:</b> ${lifeRes.reduced}` : '';
+
+  // meanings
+  if (name) {
+    const nm = nameRes.reduced || 0;
+    const info = data[nm] || {};
+    document.getElementById('meaningName').innerHTML = `<b>Name (${nm}) Meaning:</b> ${info.meaning || '—' } <br><small class="muted">Lucky Color: ${info.color || '-'} • Lucky Day: ${info.day || '-'}</small>`;
+  } else { document.getElementById('meaningName').innerHTML = ''; }
+
+  if (lifeRes) {
+    const ln = lifeRes.reduced;
+    const info2 = data[ln] || {};
+    document.getElementById('meaningLife').innerHTML = `<b>Life Path (${ln}) Meaning:</b> ${info2.meaning || '—'} <br><small class="muted">Lucky Color: ${info2.color || '-'} • Lucky Day: ${info2.day || '-'}</small>`;
+  } else { document.getElementById('meaningLife').innerHTML = ''; }
+
+  // compatibility
+  const nameNum = name ? nameRes.reduced : null;
+  const lifeNum = lifeRes ? lifeRes.reduced : null;
+  document.getElementById('compat').innerHTML = `<b>Combined Guidance / Compatibility:</b><br>${compatibilityAdvice(nameNum, lifeNum)}`;
+}
+
+/* ------------- Download / Copy features ------------- */
+async function downloadPDF(){
+  const { jsPDF } = window.jspdf;
+  const el = document.getElementById('result');
+  // ensure visible and slightly larger scale for quality
+  const canvas = await html2canvas(el, { scale: 2, backgroundColor: null });
+  const img = canvas.toDataURL('image/png');
+  const pdf = new jsPDF('p','mm','a4');
+  const pdfW = pdf.internal.pageSize.getWidth();
+  const pdfH = (canvas.height * pdfW) / canvas.width;
+  pdf.addImage(img, 'PNG', 0, 0, pdfW, pdfH);
+  pdf.save('Numerology_Result.pdf');
+}
+
+async function downloadImage(){
+  const el = document.getElementById('result');
+  const canvas = await html2canvas(el, { scale: 2, backgroundColor: null });
+  const link = document.createElement('a');
+  link.download = 'Numerology_Result.png';
+  link.href = canvas.toDataURL('image/png');
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+function copyResult() {
+  const el = document.getElementById('result');
+  // produce readable plain-text
+  let text = '';
+  const letters = document.getElementById('letters').innerText;
+  const nt = document.getElementById('nameTotal').innerText;
+  const lt = document.getElementById('lifeTotal').innerText;
+  const mn = document.getElementById('meaningName').innerText;
+  const ml = document.getElementById('meaningLife').innerText;
+  const comp = document.getElementById('compat').innerText;
+  text = [letters, nt, lt, mn, ml, comp].filter(Boolean).join('\n\n');
+  navigator.clipboard.writeText(text).then(()=> {
+    alert('Result copied to clipboard!');
+  }).catch(()=> {
+    alert('Copy failed — आप मैन्युअली कॉपी कर सकते हैं।');
+  });
+}
+
+/* ------------- Theme toggle persistence ------------- */
+const themeBtn = document.getElementById('themeToggle');
+function setThemeFromLocal() {
+  const theme = localStorage.getItem('nm_theme') || 'dark';
+  if (theme === 'light') { document.body.classList.add('light'); themeBtn.innerText = '🌞 Light'; }
+  else { document.body.classList.remove('light'); themeBtn.innerText = '🌙 Dark'; }
+}
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem('nm_theme', isLight ? 'light' : 'dark');
+  themeBtn.innerText = isLight ? '🌞 Light' : '🌙 Dark';
+}
+themeBtn.addEventListener('click', toggleTheme);
+setThemeFromLocal();
+
+</script>
+
 </body>
 </html>
